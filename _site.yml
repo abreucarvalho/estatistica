@@ -1,0 +1,15 @@
+name: "estatística"
+output_dir: "."
+navbar:
+  title: "estatística"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Análise Exploratória de Dados (AED)"
+      href: AED.html
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    theme: spacelab
+    css: style.css

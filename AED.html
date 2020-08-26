@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Análise Exploratória de Dados</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 52px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.section h2 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.section h3 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.section h4 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.section h5 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.section h6 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">estatística</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="AED.html">Análise Exploratória de Dados (AED)</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Análise Exploratória de Dados</h1>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#resumo-de-dados">Resumo de Dados</a><ul>
+<li><a href="#tipos-de-variáveis-2">Tipos de Variáveis </a></li>
+</ul></li>
+<li><a href="#distribuição-de-frequências"><em>Distribuição de Frequências</em></a><ul>
+<li><a href="#exemplo-1.1---tipos-de-variáveis-e-distribuição-de-frequências">Exemplo 1.1 - <em>tipos de variáveis e distribuição de frequências</em></a></li>
+</ul></li>
+<li><a href="#medidas-resumo"><em>Medidas-Resumo</em></a><ul>
+<li><a href="#medidas-de-posição"><em>Medidas de Posição</em></a></li>
+<li><a href="#medidas-de-dispersão"><em>Medidas de Dispersão</em></a></li>
+</ul></li>
+<li><a href="#quantis-empíricos">Quantis Empíricos</a><ul>
+<li><a href="#p-quantil"><em>P-Quantil</em></a></li>
+<li><a href="#as-cinco-estatísticas-de-ordem">As Cinco Estatísticas de Ordem</a></li>
+<li><a href="#box-plots"><em>Box Plots</em></a></li>
+<li><a href="#gráficos-de-simetria">Gráficos de Simetria</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p><br> <font size=4> Texto de referência: <a href="https://www.saraiva.com.br/estatistica-basica-9-ed-2017-9748081/p">Estatística Básica</a> - <em>Wilton de O. Bussab &amp; Pedro A. Morettin</em><br />
+<br> A <strong><em>Análise Exploratória de Dados</em></strong> visa obter dos dados a maior quantidade possível de informação, que indique modelos plausíveis a serem utilizados numa fase posterior, a análise confirmatória de dados (ou <em>inferência estatística</em><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>) .<br />
+<br> Fundamentalmente, quando se procede a uma análise de dados, busca-se alguma forma de regularidade ou padrão ou, ainda, modelo, presente nas observações.</p>
+<hr />
+<div id="resumo-de-dados" class="section level2">
+<h2>Resumo de Dados</h2>
+<hr />
+<div id="tipos-de-variáveis-2" class="section level3">
+<h3>Tipos de Variáveis <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></h3>
+<center>
+<img src="figs/class_vars.png" title="fig:" id="id" class="class" style="width:50.0%;height:50.0%" alt="Classificação de uma variável" />
+</center>
+<p><br> Queremos conhecer o <em>comportamento</em> de uma variável, analisando a ocorrência de suas possíveis realizações.</p>
+<hr />
+</div>
+</div>
+<div id="distribuição-de-frequências" class="section level2">
+<h2><em>Distribuição de Frequências</em></h2>
+<p><br> Usaremos a notação <span class="math inline">\(n_i\)</span> para indicar a frequência (absoluta) de cada classe, ou categoria, de uma variável, e a notação <span class="math inline">\(f_i=n_i/n\)</span> para indicar a proporção (ou frequência relativa) de cada classe, sendo <span class="math inline">\(n\)</span> o nº total de observações.<br />
+<br> O <strong>histograma</strong> é um gráfico de barras contíguas, com bases proporconais aos intervalos das classes e a área de cada retângulo proporcional à respectiva frequência. Pode-se usar tanto a frequência absoluta, <span class="math inline">\(n_i\)</span>, como a relativa, <span class="math inline">\(f_i\)</span>. Indiquemos a amplitude do <em>i-ésimo</em> intervalo por <span class="math inline">\(\Delta_i\)</span>. Para que a área do retângulo respectivo seja proporcional a <span class="math inline">\(f_i\)</span>, a sua altura deve ser proporcional a <span class="math inline">\(f_i/\Delta_i\)</span> (ou a <span class="math inline">\(n_i/\Delta_i\)</span>), que é a <strong><em>densidade de frequência</em></strong> da <em>i-ésima</em> classe. Com essa convenção, a área total do histograma será igual a 1.<br />
+<br> Quando os intervalos das classes forem todos iguais a <span class="math inline">\(\Delta\)</span>, a densidade de frequência da <em>i-ésima</em> classe passa a ser <span class="math inline">\(f_i/\Delta\)</span> ou <span class="math inline">\(n_i/\Delta\)</span>).<br />
+<br></p>
+<hr />
+<div id="exemplo-1.1---tipos-de-variáveis-e-distribuição-de-frequências" class="section level3">
+<h3>Exemplo 1.1 - <em>tipos de variáveis e distribuição de frequências</em></h3>
+<p><em>Obs</em>.: o exemplo a seguir foi extraído diretamente do livro de referência; os dados e códigos base necessários para a reprodução dos exemplos originais do livro em liguagem R podem ser obtidos no <a href="https://www.ime.usp.br/~pam/scriptsR.html">site do IME USP</a>. Este tutorial é apenas uma seleção de trechos do livro e faz algumas adaptações aos códigos originais. Os códigos deste tutorial estão disponíveis <a href="https://github.com/kain-ahy/econometria1">aqui</a>.<br />
+<br></p>
+<table>
+<caption>Tabela 1.1 - Informações dos empregados de uma companhia hipotética (apenas 10 primeiras linhas)</caption>
+<colgroup>
+<col width="3%" />
+<col width="12%" />
+<col width="18%" />
+<col width="12%" />
+<col width="8%" />
+<col width="11%" />
+<col width="11%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Nº</th>
+<th align="center">estado civil</th>
+<th align="center">grau de instrução</th>
+<th align="center">nº de filhos</th>
+<th align="center">salário</th>
+<th align="center">idade anos</th>
+<th align="center">idade meses</th>
+<th align="center">região de procedência</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">solteiro</td>
+<td align="center">ensino fundamental</td>
+<td align="center">NA</td>
+<td align="center">4.00</td>
+<td align="center">26</td>
+<td align="center">3</td>
+<td align="center">interior</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">casado</td>
+<td align="center">ensino fundamental</td>
+<td align="center">1</td>
+<td align="center">4.56</td>
+<td align="center">32</td>
+<td align="center">10</td>
+<td align="center">capital</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">casado</td>
+<td align="center">ensino fundamental</td>
+<td align="center">2</td>
+<td align="center">5.25</td>
+<td align="center">36</td>
+<td align="center">5</td>
+<td align="center">capital</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center">solteiro</td>
+<td align="center">ensino médio</td>
+<td align="center">NA</td>
+<td align="center">5.73</td>
+<td align="center">20</td>
+<td align="center">10</td>
+<td align="center">outra</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="center">solteiro</td>
+<td align="center">ensino fundamental</td>
+<td align="center">NA</td>
+<td align="center">6.26</td>
+<td align="center">40</td>
+<td align="center">7</td>
+<td align="center">outra</td>
+</tr>
+<tr class="even">
+<td align="center">6</td>
+<td align="center">casado</td>
+<td align="center">ensino fundamental</td>
+<td align="center">0</td>
+<td align="center">6.66</td>
+<td align="center">28</td>
+<td align="center">0</td>
+<td align="center">interior</td>
+</tr>
+<tr class="odd">
+<td align="center">7</td>
+<td align="center">solteiro</td>
+<td align="center">ensino fundamental</td>
+<td align="center">NA</td>
+<td align="center">6.86</td>
+<td align="center">41</td>
+<td align="center">0</td>
+<td align="center">interior</td>
+</tr>
+<tr class="even">
+<td align="center">8</td>
+<td align="center">solteiro</td>
+<td align="center">ensino fundamental</td>
+<td align="center">NA</td>
+<td align="center">7.39</td>
+<td align="center">43</td>
+<td align="center">4</td>
+<td align="center">capital</td>
+</tr>
+<tr class="odd">
+<td align="center">9</td>
+<td align="center">casado</td>
+<td align="center">ensino médio</td>
+<td align="center">1</td>
+<td align="center">7.59</td>
+<td align="center">34</td>
+<td align="center">10</td>
+<td align="center">capital</td>
+</tr>
+<tr class="even">
+<td align="center">10</td>
+<td align="center">solteiro</td>
+<td align="center">ensino médio</td>
+<td align="center">NA</td>
+<td align="center">7.44</td>
+<td align="center">23</td>
+<td align="center">6</td>
+<td align="center">outra</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Tabela 1.2 - Sumário de salários da companhia</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">salários</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Min.</td>
+<td align="center">4.00000</td>
+</tr>
+<tr class="even">
+<td align="left">1st Qu.</td>
+<td align="center">7.55250</td>
+</tr>
+<tr class="odd">
+<td align="left">Median</td>
+<td align="center">10.16500</td>
+</tr>
+<tr class="even">
+<td align="left">Mean</td>
+<td align="center">11.12222</td>
+</tr>
+<tr class="odd">
+<td align="left">3rd Qu.</td>
+<td align="center">14.06000</td>
+</tr>
+<tr class="even">
+<td align="left">Max.</td>
+<td align="center">23.30000</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Tabela 1.3 - Frequências e porcentagens segundo grau de instrução</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">Frequência <span class="math inline">\(n_i\)</span></th>
+<th align="center">Proporção <span class="math inline">\(f_i\)</span></th>
+<th align="center">Porcentagem <span class="math inline">\(f_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ensino fundamental</td>
+<td align="center">12</td>
+<td align="center">0.33</td>
+<td align="center">33.33</td>
+</tr>
+<tr class="even">
+<td align="left">ensino médio</td>
+<td align="center">18</td>
+<td align="center">0.50</td>
+<td align="center">50.00</td>
+</tr>
+<tr class="odd">
+<td align="left">superior</td>
+<td align="center">6</td>
+<td align="center">0.17</td>
+<td align="center">16.67</td>
+</tr>
+<tr class="even">
+<td align="left">Total</td>
+<td align="center">36</td>
+<td align="center">1.00</td>
+<td align="center">100.00</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Tabela 1.4 - Frequências e porcentagens por faixa salarial</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">Frequência <span class="math inline">\(n_i\)</span></th>
+<th align="center">Porcentagem <span class="math inline">\(f_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">[4,8)</td>
+<td align="center">10</td>
+<td align="center">27.78</td>
+</tr>
+<tr class="even">
+<td align="left">[8,12)</td>
+<td align="center">12</td>
+<td align="center">33.33</td>
+</tr>
+<tr class="odd">
+<td align="left">[12,16)</td>
+<td align="center">8</td>
+<td align="center">22.22</td>
+</tr>
+<tr class="even">
+<td align="left">[16,20)</td>
+<td align="center">5</td>
+<td align="center">13.89</td>
+</tr>
+<tr class="odd">
+<td align="left">[20,24)</td>
+<td align="center">1</td>
+<td align="center">2.78</td>
+</tr>
+<tr class="even">
+<td align="left">Total</td>
+<td align="center">36</td>
+<td align="center">100.00</td>
+</tr>
+</tbody>
+</table>
+<p><img src="AED_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /><img src="AED_files/figure-html/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /></p>
+<hr />
+</div>
+</div>
+<div id="medidas-resumo" class="section level2">
+<h2><em>Medidas-Resumo</em></h2>
+<hr />
+<div id="medidas-de-posição" class="section level3">
+<h3><em>Medidas de Posição</em></h3>
+<p>Podemos reduzir ainda mais os dados, apresentando um ou alguns valores que sejam <strong><em>representativos</em></strong> de toda a série. Usualmente, emprega-se uma das seguintes medidas de posição (ou localização) central: média, mediana ou moda.<br />
+<br> A <strong><em>moda</em></strong> é definida como a realização mais frequente do conjunto de valores observados. Em alguns casos, pode haver mais de uma moda, ou seja, a distribuição dos valores pode ser bimodal, trimodal etc. Para calcular a moda precisamos apenas da distribuição de frequências (contagem).<br />
+<br> A <strong><em>mediana</em></strong> é a realização que ocupa a posição central da série de observações, quando estão ordenadas em ordem crescente. Quando o nº de obs. for par, usa-se como mediana a média aritmética das duas observações centrais.<br />
+<br> A <strong><em>média aritmética</em></strong> é a soma das observações dividida pelo nº delas.<br />
+<br> Se <span class="math inline">\(x_1, \  ..., x_n\)</span> são os <span class="math inline">\(n\)</span> valores (distintos ou não) da variável <span class="math inline">\(X\)</span>, a média aritmética, ou simplesmente média, de <span class="math inline">\(X\)</span> pode ser escrita<br />
+<br> <span class="math display">\[\overline x= \frac{x_1+...+x_n}{n}=\frac{1}{n}\sum^n_{i=1}x_i \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1.1)\]</span> <br> Se tivermos <span class="math inline">\(n\)</span> observações da variável <span class="math inline">\(X\)</span>, das quais <span class="math inline">\(n_1\)</span> são iguais a <span class="math inline">\(x_1\)</span>, <span class="math inline">\(n_2\)</span> são iguais a <span class="math inline">\(x_2\)</span> etc., <span class="math inline">\(n_k\)</span> iguais a <span class="math inline">\(x_k\)</span>, então a média de <span class="math inline">\(X\)</span> pode ser escrita <br> <span class="math display">\[\overline x=\frac{n_1x_1+...+n_kx_k}{n}=\frac{1}{n}\sum^k_{i=1}n_ik_i \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1.2)\]</span> <br> Se <span class="math inline">\(f_i=n_i/n\)</span> representar a frequência relativa da observação <span class="math inline">\(x_i\)</span>, então <span class="math inline">\((1.2)\)</span> também pode ser escrita<br />
+<br> <span class="math display">\[\overline x=\sum^k_{i=1}f_ix_i \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  (1.3)\]</span> <br> As observações quando ordenadas em ordem decrescente são chamadas <strong><em>estatísticas de ordem</em></strong>. Caso ordenada, a <strong><em>mediana</em></strong> da variável X pode ser definida como<br />
+<br> <span class="math display">\[md(X)=\begin{cases} x_{(\frac{n+1}{2})}, \ \ \ \text{se n ímpar;} \\\\ {\frac{x_{(\frac{n}{2})} \ + \ \ x_{({\frac{n}{2}+1})}}{2}}, \ \ \ \text{se n par.} \end{cases} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  (1.4)\]</span></p>
+<hr />
+</div>
+<div id="medidas-de-dispersão" class="section level3">
+<h3><em>Medidas de Dispersão</em></h3>
+<p>Um critério frequentemente usado para comparar conjuntos diferentes de valores é aquele que mede a dispersão dos dados de em torno de sua média, e duas medidas são as mais usadas: desvio médio e variância. O princípio básico é analisar os desvios das observações em relação à média dessas observações: <span class="math inline">\(x_i-\bar x\)</span></p>
+<ul>
+<li>Para <em>qualquer</em> conjunto de dados, a soma dos <strong><em>desvios</em></strong> é igual a zero!</li>
+</ul>
+<p><span class="math display">\[\sum_{i=1}^n (x_i-\bar x)=0\]</span> <br></p>
+<ul>
+<li>Para obter um valor significativo, podemos considerar o total dos desvios em valor absoluto</li>
+</ul>
+<p><span class="math display">\[\sum_{i=1}^n |x_i-\bar x|\]</span> <br></p>
+<ul>
+<li>Outra opção consiste em considerar o total dos quadrados dos desvios</li>
+</ul>
+<p><span class="math display">\[\sum_{i=1}^n (x_i-\bar x)^2\]</span></p>
+<ul>
+<li>Entretando o uso desses totais pode causar dificuldades quando comparamos conjuntos de dados com <em>números diferentes de observações</em>. Desse modo, é mais conveniente expremir as medidas como médias, isto é, o <strong><em>desvio médio</em></strong> e a <strong><em>variância</em></strong> são definidos por</li>
+</ul>
+<p><span class="math display">\[dm(X)=\frac{\sum_{i=1}^n |x_i-\bar x|}{n}, \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  (1.5)\]</span></p>
+<p><span class="math display">\[var(X)=\frac{\sum_{i=1}^n(x_i-\bar x)^2}{n} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1.6)\]</span></p>
+<p>Valores próximos de zero indicam maior <em>homogeneidade</em> dos dados.</p>
+<p>Sendo a <strong><em>variância</em></strong> uma medida de dimensão igual ao quadrado da dimensão dos dados costuma-se usar o <em>desvio padrão</em>, que é definido como</p>
+<p><span class="math display">\[dp(X)=\sqrt{var(X)} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1.7)\]</span></p>
+<p><br></p>
+<p><span style="color: green"><em>Ambas as medidas de dispersão (dm e dp) indicam em média qual será o “erro” (desvio) cometido ao tentar substituir cada observação pela medida resumo do conjunto de dados (no caso, a média).</em></span><br />
+<br> Suponha que observemos <span class="math inline">\(n_1\)</span> vezes os valores <span class="math inline">\(x_1\)</span> etc., <span class="math inline">\(n_k\)</span> vezes o valor <span class="math inline">\(x_k\)</span> da variável <span class="math inline">\(X\)</span>. Então,</p>
+<p><span class="math display">\[dm(X)=\frac{\sum_{i=1}^k n_i|x_i-\bar n|}{n}=\sum_{i=1}^k f_i|x_i-\bar x|  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1.8)\]</span></p>
+<p><span class="math display">\[var(X)=\frac{\sum_{i=1}^k n_i(x_i-\bar n)^2}{n}=\sum_{i=1}^k f_i(x_i-\bar x)^2 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1.9)\]</span></p>
+<p><br></p>
+<p>Assim como a <em>média</em>, a <em>variância</em> (ou <em>desvio padrão</em>) é uma boa medida se a distribuição dos dados for aproximadamente normal.</p>
+<hr />
+</div>
+</div>
+<div id="quantis-empíricos" class="section level2">
+<h2>Quantis Empíricos</h2>
+<p><br> A <em>média</em> e o <em>desvio padrão</em> podem não ser medidas adequadas para representar um conjunto de dados, pois</p>
+<ul>
+<li><p>são afetados, de forma exagerada, por <em>valores extremos</em>;</p></li>
+<li><p>apenas com estes valores não temos ideia da <em>simetria</em> ou <em>assimetria</em> da distribuição dos dados</p></li>
+</ul>
+<p><em>Para contornar esses fatos outras medidas têm que ser consideradas.</em></p>
+<p><br> Vimos que a <em>mediana</em>, descrita na fórmula <span class="math inline">\((1.4)\)</span>, é um valor que deixa metade dos dados abaixo dela e metade acima . De modo geral, podemos definir uma medida, chmada <em>quantil</em> de ordem <em>p</em> ou <em>p-quantil</em>, indicada por <span class="math inline">\(q(p)\)</span>, onde <span class="math inline">\(p\)</span> é uma proporção qualquer, <span class="math inline">\(0&lt;p&lt;1\)</span>, tal que <em>100p%</em> das observações sejam menores do que <span class="math inline">\(q(p)\)</span>.</p>
+<p><span style="color: green">Dizemos que a <em>mediana</em> é <strong>resistente</strong> ou <strong>robusta</strong>, no sentido de que ela não é muito afetada por valores extremos.</span></p>
+<p>Uma medida de dispersão alternativa ao desvio padrão é a <strong><em>distância interquartil</em></strong>, definida como a diferença entre o terceiro e primeiro quartis, ou seja,</p>
+<p><span class="math display">\[d_q=q_3-q_1 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  (2.1)\]</span></p>
+<p>Os <em>quartis</em> <span class="math inline">\(q(0,25)=q_1, \ q(0,5)=q_2, \ q(0,75)=q_3\)</span> são medidas de localização resistentes de uma distribuição.</p>
+<hr />
+<div id="p-quantil" class="section level3">
+<h3><em>P-Quantil</em></h3>
+<p><span style="color: blue"><strong>Definição.</strong></span> O <em>p-quantil</em> é definido por</p>
+<p><span class="math display">\[
+q(p)=\begin{cases} x_{(i)}, \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ se \ p=p_i=\frac{i-0,5}{n}, i=1,2, ...,n \\\\ (1-f_i)x_(i) \ + \ f_ix_{(i+1)}, \ \ \ se \ p_i&lt;p&lt;p_{i+1} \\\\ x_(i), \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ se \ p&lt;p_1 \\\\ x_(n), \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ se \ p&lt;p_n\end{cases}
+\]</span><br />
+onde <span class="math inline">\(f_i=\frac{(p-p_i)}{p_{i+1}-p_i}\)</span>.</p>
+<hr />
+</div>
+<div id="as-cinco-estatísticas-de-ordem" class="section level3">
+<h3>As Cinco Estatísticas de Ordem</h3>
+<p>Os <span style="color: green"><em>cinco valores</em></span>, <span class="math inline">\(x_{(1)}, \ q_1, \ q_2, \ q_3 \ e \ x_{(n)}\)</span> são importantes para se ter uma boa ideia da assimetria da distribuição dos dados.</p>
+<p>Para uma distribuição simétrica ou aproximadamente simétrica, deveríamos ter:</p>
+<p><span class="math inline">\((a) \ q_2-x_{(1)}\approx x_{(n)}-q_2;\)</span></p>
+<p><span class="math inline">\((b) \ q_2-q_1\approx q_3-q_2;\)</span></p>
+<p><span class="math inline">\((c) \ q_1-x_{(1)}\approx x_{(n)}-q_3;\)</span></p>
+<p><span class="math inline">\((d) \ \text{distâncias entre mediana e} \ q_1, \ q_3 \ \text{menores do que distâncias entre os extremos} \ q_1, \ q_3.\)</span><br />
+<br> A diferença <span class="math inline">\(q_2-x_{(1)}\)</span> é chamada <em>dispersão inferior</em> e <span class="math inline">\(x_{(n)}-q_2\)</span> é a <em>dispersão superior</em>.</p>
+<hr />
+<p><img src="AED_files/figure-html/dnorm-1.png" width="672" style="display: block; margin: auto;" /></p>
+<hr />
+</div>
+<div id="box-plots" class="section level3">
+<h3><em>Box Plots</em></h3>
+<p>A informação contida no <em>esquema dos cinco números</em> pode ser traduzida graficamente num diagrama que chamaremos de <em>box plot</em>.</p>
+<p>O <em>box plot</em> dá uma ideia da posição, dispersão, assimetria, caudas e dados discrepantes.</p>
+<p>Para construir este diagrama, consideremos um retângulo onde estão representados a mediana e os quartis. A linha que segue do retângulo atinge os limites superior <span class="math inline">\(LS=q_3+3/2 \ d_q\)</span> e inferior <span class="math inline">\(LI=q_1-3/2 \ d_q\)</span>. As observações para além dos limites serão chamadas <em>pontos exteriores</em> e representadas por asteriscos. Essas são observações destoantes das demais e podem ou não ser o que chamamos de <strong><em>outliers</em></strong> ou <em>valores atípicos</em>.</p>
+<p><img src="AED_files/figure-html/boxplot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>A justificativa para usarmos os limites é a seguinte: considere uma curva normal com média zero e, portanto, com mediana zero. Neste caso, <span class="math inline">\(q_1=-0,6745\)</span>, <span class="math inline">\(q_2=0\)</span>, <span class="math inline">\(q_3=0,6745\)</span> e portanto <span class="math inline">\(d_q=1,349\)</span>. Segue-se que os limites são <span class="math inline">\(LI=-2,698\)</span> e <span class="math inline">\(LS=2,698\)</span>. A área entre os dois valores abaixo da curva normal é <span class="math inline">\(0,993\)</span>, ou seja, <span class="math inline">\(99,3%\)</span> da distribuição está entre esses dois valores. Isto é, para dados com distribuição normal, os pontos exteriores constituirão cerca de <span class="math inline">\(0,7%\)</span> da distribuição.</p>
+<hr />
+</div>
+<div id="gráficos-de-simetria" class="section level3">
+<h3>Gráficos de Simetria</h3>
+<p>Se um conjunto de informações for perfeitamente simétrico demovos ter</p>
+<p><span class="math display">\[q(1/2)-x_{(i)}=x_{(n \ + \ 1 \ - \ i)} \ -q(1/2)\]</span></p>
+<p>onde <span class="math inline">\(i=1,2, \ ..., n/2\)</span>, se <span class="math inline">\(n\)</span> for par e <span class="math inline">\(i=1,2, \ ..., (n+1)/2\)</span>, se <span class="math inline">\(n\)</span> for ímpar.</p>
+<hr />
+<hr />
+<p><span class="math display">\[\Re\]</span></p>
+<hr />
+<p></font></p>
+<p><br></p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><strong>Inferência Estatística</strong> é o estudo de técnicas que possibilitam a extrapolação, a um grande conjunto de dados, das informações e conclusões obtidas a partir da amostra.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><strong>Variáveis discretas</strong>: quando o conjunto de resultados possíveis é finito ou enumerável. <strong>Variáveis contínuas</strong>: quando os valores são expressos como intervalo ou união de números reais.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
