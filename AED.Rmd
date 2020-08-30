@@ -401,4 +401,4 @@ $$\Re$$
 
 [1]:https://www.saraiva.com.br/estatistica-basica-9-ed-2017-9748081/p
 [2]:https://www.ime.usp.br/~pam/scriptsR.html 
-[3]:https://github.com/kain-ahy/econometria1
+[3]:https://github.com/kain-ahy/estatistica
