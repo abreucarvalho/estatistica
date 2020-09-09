@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Variância e Covariância</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 52px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.section h2 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.section h3 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.section h4 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.section h5 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.section h6 {
+  padding-top: 57px;
+  margin-top: -57px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">estatística</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="AED.html">Análise Exploratória de Dados (AED)</a>
+</li>
+<li>
+  <a href="VarCov.html">Variância e Covariância</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Variância e Covariância</h1>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#variância">Variância</a><ul>
+<li><a href="#propriedades-da-variância"><em>Propriedades da Variância</em></a></li>
+</ul></li>
+<li><a href="#covariância">Covariância</a><ul>
+<li><a href="#propriedades-da-covariância"><em>Propriedades da Covariância</em></a></li>
+</ul></li>
+<li><a href="#coeficiente-de-correlação">Coeficiente de Correlação</a><ul>
+<li><a href="#variâncias-de-variáveis-correlacionadas"><em>Variâncias de variáveis correlacionadas</em></a></li>
+</ul></li>
+</ul>
+</div>
+
+<hr />
+<p><br> <font size = 4> Textos de referência:</p>
+<ul>
+<li><p><strong><a href="https://books.google.com.br/books/about/Econometria_B%C3%A1sica.html?id=bOLX3aXf6y0C&amp;printsec=frontcover&amp;source=kp_read_button&amp;redir_esc=y#v=onepage&amp;q&amp;f=false">Econometria Básica</a></strong> - <em>Damodar N. Gujarati; Dawn C. Porter</em></p>
+<p>Apêndice A - Revisão de alguns conceitos estatísticos</p></li>
+</ul>
+<p><br></p>
+<hr />
+<div id="variância" class="section level1">
+<h1>Variância</h1>
+<p>Seja <span class="math inline">\(X\)</span> uma variável aleatória e seja <span class="math inline">\(E(X)=\mu\)</span>. A distribuição, ou dispersão, dos valores de <span class="math inline">\(X\)</span> em torno do valor esperado pode ser mensurada pela variÂncia, definida como</p>
+<p><br></p>
+<p><span class="math display">\[
+var(X)=\sigma_X^2=E(X-\mu)^2
+\]</span></p>
+<p><br></p>
+<p>A raiz quadrada positiva de <span class="math inline">\(\sigma^2_X\)</span>, <span class="math inline">\(\sigma_X\)</span> é definida como <strong>desvio padrão</strong> de <span class="math inline">\(X\)</span>. A variância, ou desvio padrão, indica quão próximos ou distantes os valores individuais de <span class="math inline">\(X\)</span> estão distribuídos em torno de seu valor médio.</p>
+<p>A variância definida previamente é calculada como se segue:</p>
+<p><span class="math display">\[
+var(X)=\sum_x (X-\mu)^2f(x) \ \ \ \ \ \ \ \ \ \ \text{se for uma variável aleatória discreta} \\\
+var(X)=\int_{-\inf}^\inf (X-\mu)^2f(x)dx \ \ \ \ \ \ \ \ \ \ \text{se X for uma variável aleatória contínua} 
+\]</span></p>
+<p><br></p>
+<p>Para conveniência de cálculo, a fórmula da variância apresentada pode ser expressa como</p>
+<p><br></p>
+<p><span class="math display">\[
+var(x)=\sigma^2_x=E(X-\mu)^2 \\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =E(X^2)-\mu^2 \\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \ \ \  =E(X^2)-[E(X)]^2
+\]</span></p>
+<hr />
+<div id="propriedades-da-variância" class="section level2">
+<h2><em>Propriedades da Variância</em></h2>
+<p><br></p>
+<ol style="list-style-type: decimal">
+<li><p><span class="math inline">\(E(X-\mu)^2=E(X^2)-\mu^2\)</span>, como observado anteriormente.</p></li>
+<li><p>A variância de uma constante é zero.</p></li>
+<li><p>Se <span class="math inline">\(a\)</span> e <span class="math inline">\(b\)</span> são constantes, então</p></li>
+</ol>
+<p><span class="math display">\[
+var(aX+b)=a^2 \ var(X)
+\]</span></p>
+<ol start="4" style="list-style-type: decimal">
+<li>Se <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> são variáveis aleatórias <em>independentes</em>, então</li>
+</ol>
+<p><span class="math display">\[
+var(X+Y)=var(X)+(Y) \\ var(X-Y)=var(X)+(Y)
+\]</span></p>
+<center>
+Isso pode ser generalizado para mais do que duas variáveis independentes.
+</center>
+<p><br></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Se <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> são variáveis aleatórias <em>independentes</em>, e <span class="math inline">\(a\)</span> e <span class="math inline">\(b\)</span> são constantes,</li>
+</ol>
+<p><span class="math display">\[
+var(aX+bY)=a^2 \ var(x)+b^2 \ var(Y)
+\]</span></p>
+<p><br></p>
+<hr />
+</div>
+</div>
+<div id="covariância" class="section level1">
+<h1>Covariância</h1>
+<p>Seja <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> duas variáveis aleatórias com médias <span class="math inline">\(\mu_x\)</span> e <span class="math inline">\(\mu_y\)</span>, respectivamente. Então, a <strong>covariância</strong> entre as duas variáveis é definida como:</p>
+<p><span class="math display">\[
+Cov(X,Y)=E(X-\mu_x)(Y-\mu_y)=E(XY)-\mu_x\mu_y 
+\]</span></p>
+<p><br></p>
+<p>A variância de uma única variável é a covariância daquela variável com ela mesma.</p>
+<p>A covariância é calculada como se segue:</p>
+<p><span class="math display">\[
+Cov(X,Y)=\sum_y \sum_x (X-\mu_x)(Y-\mu_y)f(x,y) \\ \ \ \ \ \ \ \ \ =\sum_y \sum_x XYf(x,y)-\mu_x\mu_y
+\]</span></p>
+<p>se <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> são variáveis aleatórias discretas, e</p>
+<p><span class="math display">\[
+Cov(X,Y)=\int_{-\inf}^{\inf}\int_{-\inf}^{\inf}(X-\mu_x)(Y-\mu_y)f(x,y) \ dx \ dy \\ \ \ \ \ \ \ \ =\int_{-\inf}^{\inf}\int_{-\inf}^{\inf}XYf(x,y) \ dx \ dy -\mu_x\mu_y
+\]</span></p>
+<p>se <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> são variáveis aleatórias contínuas.</p>
+<hr />
+<div id="propriedades-da-covariância" class="section level2">
+<h2><em>Propriedades da Covariância</em></h2>
+<p><br></p>
+<p><strong>1.</strong> Se <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> são independentes, a sua covariância é zero, pois</p>
+<p><span class="math display">\[
+Cov(X,Y)=E(XY)-\mu_x\mu_y \\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \mu_x\mu_y-\mu_x\mu_y \\ =0 \ \ \ \ 
+\]</span></p>
+<p>uma vez que <span class="math inline">\(E(XY)=E(X)E(Y)=\mu_x\mu_y\)</span> quando <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> são independentes.</p>
+<p><br></p>
+<p><strong>2.</strong></p>
+<p><span class="math display">\[
+Cov(a+bX, \ \ c \ + \ dY)=bd \ Cov(X,Y)
+\]</span></p>
+<p>em que <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, <span class="math inline">\(c\)</span> e <span class="math inline">\(d\)</span> são constantes.</p>
+<p><br></p>
+<hr />
+</div>
+</div>
+<div id="coeficiente-de-correlação" class="section level1">
+<h1>Coeficiente de Correlação</h1>
+<p>O coeficiente de correlação (população) <span class="math inline">\(\rho\)</span> (rho) é definido como:</p>
+<p><br></p>
+<p><span class="math display">\[
+\rho=\frac{Cov(X,Y)}{\sqrt{var(x) \ var(Y)}}=\frac{Cov(X,Y)}{\sigma_x\sigma_y}
+\]</span></p>
+<p><br></p>
+<p>Assim definido, <span class="math inline">\(\rho\)</span> é uma medida de associação <em>linear</em> entre duas variáveis e situa-se entre <span class="math inline">\(-1\)</span>, indicando associação negativa perfeita, e <span class="math inline">\(+1\)</span>, indicando associação positiva perfeita.</p>
+<p>Por meio da fórmula anterior podemos verificar que</p>
+<p><span class="math display">\[
+Cov(X,Y)=\rho \ \sigma_x\sigma_y
+\]</span> <br></p>
+<hr />
+<div id="variâncias-de-variáveis-correlacionadas" class="section level3">
+<h3><em>Variâncias de variáveis correlacionadas</em></h3>
+<p>Sejam <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> as duas variáveis aleatórias. Então,</p>
+<p><span class="math display">\[
+var(X+Y)=var(X)+var(Y)+2 \ Cov(X,Y) \\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =var(X)+var(Y)+2\rho\sigma+x\sigma_y \\ var(X-Y)=var(X)+var(Y)-2 \ Cov(X,Y) \\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =var(X)+var(Y)-2\rho\sigma+x\sigma_y 
+\]</span></p>
+<p><br></p>
+<p>Os resultados anteriores podem ser generalizados como se segue:</p>
+<p><span class="math display">\[
+var \ ( \ \sum^n_{i=1}x_i \ )=\sum^n_{i=1}var \ X_i \ + \ 2\sum\sum_{i&lt;j} Cov(X_i, \ X_j) \\ = \sum^n_{i=1}var \ X_i \ + \ 2\sum\sum_{i&lt;j}\rho_{ij}\sigma_i\sigma_j
+\]</span></p>
+<p><br></p>
+<p>em que <span class="math inline">\(\rho_{ij}\)</span> é o coeficiente de correlação entre <span class="math inline">\(X_i\)</span> e <span class="math inline">\(X_j\)</span> e <span class="math inline">\(\sigma_i\)</span> e <span class="math inline">\(\sigma_j\)</span> são os desvios padrão de <span class="math inline">\(X_i\)</span> e <span class="math inline">\(X_j\)</span>.</p>
+<p><br></p>
+<hr />
+<p><span class="math display">\[\Re\]</span></p>
+<hr />
+<p></font></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

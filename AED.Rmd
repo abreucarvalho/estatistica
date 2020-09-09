@@ -2,6 +2,8 @@
 title: "Análise Exploratória de Dados"
 ---
 
+***
+
 <br>
 <font size=4> 
 Texto de referência: [Estatística Básica][1] - *Wilton de O. Bussab & Pedro A. Morettin*  
@@ -10,7 +12,7 @@ A ***Análise Exploratória de Dados (AED)*** visa obter dos dados a maior quant
 <br>
 Fundamentalmente, quando se procede a uma análise de dados, busca-se alguma forma de regularidade ou padrão ou, ainda, modelo, presente nas observações.
  
----
+***
 
 ## Resumo de Dados
 
