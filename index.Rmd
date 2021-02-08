@@ -1,12 +1,12 @@
 ---
-title: "estatística em R!"
+title: "Inrodução à Análise Estatística no R!"
 ---
 
 <font size=3>
 
 **Autor:** *Rodrigo Abreu Carvalho* (carvalho.ra@outlook.com)  
 
-Repositório público do GitHub com os códigos: [https://github.com/kain-ahy/estatistica](https://github.com/kain-ahy/estatistica)  
+Repositório público do GitHub com os códigos: [https://github.com/abreucarvalho/estatistica](https://github.com/abreucarvalho/estatistica)  
 
 ***
 
@@ -14,4 +14,4 @@ $$\Re$$
 
 ***
 
-</font>
+</font>   
